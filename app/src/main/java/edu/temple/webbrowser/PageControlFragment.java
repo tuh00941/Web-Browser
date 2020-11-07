@@ -73,6 +73,7 @@ public class PageControlFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        System.out.println("Seen again.");
         // Inflate the layout for this fragment
         l = inflater.inflate(R.layout.fragment_page_control, container, false);
 

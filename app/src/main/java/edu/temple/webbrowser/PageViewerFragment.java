@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -80,7 +79,18 @@ public class PageViewerFragment extends Fragment {
         webView.setWebViewClient(webViewClient);
         webView.getSettings().setJavaScriptEnabled(true);
 
+        if(savedInstanceState != null) {
+            webView.restoreState(savedInstanceState);
+        }
+
         return l;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        webView.saveState(outState);
     }
 
     private class MyWebViewClient extends WebViewClient {
