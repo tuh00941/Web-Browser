@@ -1,6 +1,7 @@
 package edu.temple.webbrowser;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -12,19 +13,32 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
     PageViewerFragment pageViewerFragment;
     PageControlFragment pageControlFragment;
 
+    Fragment tmpFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        pageControlFragment = new PageControlFragment();
         FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ftc = fm.beginTransaction();
-        ftc.add(R.id.page_control, pageControlFragment).commit();
 
-        pageViewerFragment = new PageViewerFragment();
-        FragmentTransaction ftv = fm.beginTransaction();
-        ftv.add(R.id.page_viewer, pageViewerFragment).commit();
+        if ((tmpFragment = fm.findFragmentById(R.id.page_control)) instanceof PageControlFragment)
+            pageControlFragment = (PageControlFragment) tmpFragment;
+        else {
+            pageControlFragment = new PageControlFragment();
+            fm.beginTransaction()
+                    .add(R.id.page_control, pageControlFragment)
+                    .commit();
+        }
+
+        if ((tmpFragment = fm.findFragmentById(R.id.page_viewer)) instanceof PageViewerFragment)
+            pageViewerFragment = (PageViewerFragment) tmpFragment;
+        else {
+            pageViewerFragment = new PageViewerFragment();
+            fm.beginTransaction()
+                    .add(R.id.page_viewer, pageViewerFragment)
+                    .commit();
+        }
     }
 
     @Override
