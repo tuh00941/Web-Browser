@@ -166,6 +166,7 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
 
     @Override
     public void switchTab(int index) {
+        pagerFragment.viewPager.getAdapter().notifyDataSetChanged();
         pagerFragment.viewPager.setCurrentItem(index, true);
     }
 }

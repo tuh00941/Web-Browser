@@ -89,6 +89,7 @@ public class PageViewerFragment extends Fragment {
 
         if(savedInstanceState != null) {
             webView.restoreState(savedInstanceState);
+            System.out.println("Restoring web view");
             position = savedInstanceState.getInt("Position");
         }
         else {
@@ -119,7 +120,6 @@ public class PageViewerFragment extends Fragment {
             if(position == ((PagerFragment) getParentFragment()).viewPager.getCurrentItem()) {
                 ((SetUrlInterface) getParentFragment().getActivity()).setUrl(url);
                 if(!(view.getTitle() == null || view.getTitle().length() == 0)) {
-                    System.out.println("Web View Title = " + view.getTitle());
                     pageTitle = view.getTitle();
                     getParentFragment().getActivity().setTitle(view.getTitle());
                     ((PageListFragment.PageListInterface) getParentFragment().getActivity()).updateTitle(position, view.getTitle());
@@ -136,13 +136,11 @@ public class PageViewerFragment extends Fragment {
                 }
 
                 System.out.println("Viewer-Made Title = <" + getParentFragment().getActivity().getTitle() + ">");
-                onPageFinished(view, url);
             }
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            System.out.println("Page finished. Title is " + view.getTitle());
             if(getParentFragment().getActivity() != null && position == ((PagerFragment) getParentFragment()).viewPager.getCurrentItem()) {
                 pageTitle = view.getTitle();
                 getParentFragment().getActivity().setTitle(view.getTitle());

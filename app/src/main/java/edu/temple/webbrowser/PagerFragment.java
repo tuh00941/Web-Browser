@@ -74,16 +74,7 @@ public class PagerFragment extends Fragment {
 
         pageList = new ArrayList<>();
 
-        if(savedInstanceState != null) {
-            int numPages = savedInstanceState.getInt("Number of Pages");
-            if(numPages > 0) {
-                System.out.println(numPages + " Pages");
-                String page = "Page ";
-                for(int i = 0; i < numPages; i++) {
-                    pageList.add((PageViewerFragment) getChildFragmentManager().getFragment(savedInstanceState, page + i));
-                }
-            }
-        }
+        viewPager.setOffscreenPageLimit(99);
 
         viewPager.setAdapter(new FragmentStatePagerAdapter(getChildFragmentManager()) {
             @NonNull
@@ -100,6 +91,19 @@ public class PagerFragment extends Fragment {
             @Override
             public void destroyItem(ViewGroup container, int position, Object object) {}
         });
+
+        if(savedInstanceState != null) {
+            int numPages = savedInstanceState.getInt("Number of Pages");
+            if(numPages > 0) {
+                System.out.println(numPages + " Pages");
+                String page = "Page ";
+                System.out.println("Restoring fragments");
+                for(int i = 0; i < numPages; i++) {
+                    pageList.add((PageViewerFragment) getChildFragmentManager().getFragment(savedInstanceState, page + i));
+                    viewPager.getAdapter().notifyDataSetChanged();
+                }
+            }
+        }
 
         if(savedInstanceState != null) {
             viewPager.setCurrentItem(savedInstanceState.getInt("Current Page"));
@@ -172,6 +176,7 @@ public class PagerFragment extends Fragment {
         String page = "Page ";
         int i = 0;
 
+        System.out.println("Saving fragments");
         for(PageViewerFragment pageViewerFragment : pageList) {
             getChildFragmentManager().putFragment(outState, page + i, pageViewerFragment);
             i++;
