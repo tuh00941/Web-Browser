@@ -8,13 +8,27 @@
 
     <FrameLayout
         android:id="@+id/browser_control"
-        android:layout_width="336dp"
+        android:layout_width="232dp"
         android:layout_height="54dp"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="80dp"
         android:layout_marginEnd="1dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/page_list"
+        android:layout_width="230dp"
+        android:layout_height="201dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="132dp"
+        android:layout_marginEnd="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -22,13 +36,13 @@
 
     <FrameLayout
         android:id="@+id/page_control"
-        android:layout_width="336dp"
+        android:layout_width="658dp"
         android:layout_height="54dp"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="1dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -36,28 +50,15 @@
 
     <FrameLayout
         android:id="@+id/page_viewer"
-        android:layout_width="336dp"
-        android:layout_height="428dp"
+        android:layout_width="425dp"
+        android:layout_height="255dp"
+        android:layout_marginTop="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.026"
+        app:layout_constraintStart_toEndOf="@+id/browser_control"
         app:layout_constraintTop_toBottomOf="@+id/page_control"
         app:layout_constraintVertical_bias="0.0">
-
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/page_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

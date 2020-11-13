@@ -1,6 +1,7 @@
 package edu.temple.webbrowser;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -27,6 +29,10 @@ public class PageViewerFragment extends Fragment {
     SetUrlInterface parentActivity;
     public View l;
     public WebView webView;
+    public String link;
+
+    public int position;
+    public String pageTitle;
 
     public PageViewerFragment() {
         // Required empty public constructor
@@ -77,10 +83,16 @@ public class PageViewerFragment extends Fragment {
         webView = l.findViewById(R.id.web_view);
         MyWebViewClient webViewClient = new MyWebViewClient();
         webView.setWebViewClient(webViewClient);
+        MyOtherWebViewClient myOtherWebViewClient = new MyOtherWebViewClient();
+        webView.setWebChromeClient(myOtherWebViewClient);
         webView.getSettings().setJavaScriptEnabled(true);
 
         if(savedInstanceState != null) {
             webView.restoreState(savedInstanceState);
+            position = savedInstanceState.getInt("Position");
+        }
+        else {
+            ((PageListFragment.PageListInterface) ((PagerFragment) getParentFragment()).getActivity()).addView(webView.getTitle());
         }
 
         return l;
@@ -91,6 +103,7 @@ public class PageViewerFragment extends Fragment {
         super.onSaveInstanceState(outState);
 
         webView.saveState(outState);
+        outState.putInt("Position", position);
     }
 
     private class MyWebViewClient extends WebViewClient {
@@ -101,7 +114,65 @@ public class PageViewerFragment extends Fragment {
 
         @Override
         public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
-            ((SetUrlInterface) getActivity()).setUrl(url);
+            link = url;
+            System.out.println("Position = " + position);
+            if(position == ((PagerFragment) getParentFragment()).viewPager.getCurrentItem()) {
+                ((SetUrlInterface) getParentFragment().getActivity()).setUrl(url);
+                if(!(view.getTitle() == null || view.getTitle().length() == 0)) {
+                    System.out.println("Web View Title = " + view.getTitle());
+                    pageTitle = view.getTitle();
+                    getParentFragment().getActivity().setTitle(view.getTitle());
+                    ((PageListFragment.PageListInterface) getParentFragment().getActivity()).updateTitle(position, view.getTitle());
+                }
+                else if(!(url == null || url.length() == 0)) {
+                    pageTitle = url;
+                    getParentFragment().getActivity().setTitle(pageTitle);
+                    ((PageListFragment.PageListInterface) getParentFragment().getActivity()).updateTitle(position, pageTitle);
+                }
+                else {
+                    pageTitle = "New Tab";
+                    getParentFragment().getActivity().setTitle(pageTitle);
+                    ((PageListFragment.PageListInterface) getParentFragment().getActivity()).updateTitle(position, pageTitle);
+                }
+
+                System.out.println("Viewer-Made Title = <" + getParentFragment().getActivity().getTitle() + ">");
+                onPageFinished(view, url);
+            }
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            System.out.println("Page finished. Title is " + view.getTitle());
+            if(getParentFragment().getActivity() != null && position == ((PagerFragment) getParentFragment()).viewPager.getCurrentItem()) {
+                pageTitle = view.getTitle();
+                getParentFragment().getActivity().setTitle(view.getTitle());
+                ((PageListFragment.PageListInterface) getParentFragment().getActivity()).updateTitle(position, view.getTitle());
+                System.out.println("Client-Made Title = <" + getParentFragment().getActivity().getTitle() + ">");
+            }
+        }
+    }
+
+    private class MyOtherWebViewClient extends WebChromeClient {
+
+        private MyOtherWebViewClient() { super(); }
+
+        @Override
+        public void onReceivedTitle(WebView view, String title) {
+            if(position == ((PagerFragment) getParentFragment()).viewPager.getCurrentItem()) {
+                if(!(title == null || title.length() == 0)) {
+                    pageTitle = title;
+                    if(getParentFragment().getActivity() != null) {
+                        getParentFragment().getActivity().setTitle(title);
+                        ((PageListFragment.PageListInterface) getParentFragment().getActivity()).updateTitle(position, title);
+                    }
+                }
+            }
+            /*if(!(title == null || title.length() == 0)) {
+                pageTitle = title;
+                if((PageListFragment.PageListInterface) getParentFragment().getActivity() != null) {
+                    ((PageListFragment.PageListInterface) getParentFragment().getActivity()).updateTitle(position, title);
+                }
+            }*/
         }
     }
 
