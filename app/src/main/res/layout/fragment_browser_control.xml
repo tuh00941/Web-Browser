@@ -6,9 +6,35 @@
     android:layout_height="match_parent"
     tools:context=".BrowserControlFragment">
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_input_add" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_input_add" />
+
+        <ImageButton
+            android:id="@+id/saveBookmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="57dp"
+            android:layout_marginTop="0dp"
+            android:src="@android:drawable/ic_menu_save" />
+
+        <ImageButton
+            android:id="@+id/viewBookmarks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="114dp"
+            android:layout_marginTop="0dp"
+            android:src="@android:drawable/ic_input_get" />
+    </RelativeLayout>
+
 </FrameLayout>

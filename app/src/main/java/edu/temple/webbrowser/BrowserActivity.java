@@ -7,8 +7,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 public class BrowserActivity extends AppCompatActivity implements PageControlFragment.LoadPageInterface, PageViewerFragment.SetUrlInterface, BrowserControlFragment.BrowserControlInterface, PageListFragment.PageListInterface {
 
@@ -87,6 +90,23 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK)
+        {
+            SharedPreferences sharedPreferences = getSharedPreferences("bookmarks", MODE_PRIVATE);
+            String url = sharedPreferences.getString("url" + data.getIntExtra("position", 0), null);
+
+            pageControlFragment.urlView.setText(url);
+            pageControlFragment.url = url;
+
+            loadPage(url);
+        }
+    }
+
+    @Override
     public void loadPage(String url) {
         if(pagerFragment.pageList.size() > 0) {
             PageViewerFragment page = pagerFragment.pageList.get(pagerFragment.viewPager.getCurrentItem());
@@ -152,6 +172,44 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
         pagerFragment.viewPager.getAdapter().notifyDataSetChanged();
         pagerFragment.viewPager.setCurrentItem(pagerFragment.pageList.size() - 1, true);
         System.out.println("Number of pages: " + pagerFragment.pageList.size());
+    }
+
+    @Override
+    public void saveBookmark() {
+        SharedPreferences sharedPreferences = getSharedPreferences("bookmarks", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        int bookmarkCount = sharedPreferences.getInt("bookmarkCount", 0);
+
+        if(pagerFragment.pageList.size() > 0) {
+            PageViewerFragment page = pagerFragment.pageList.get(pagerFragment.viewPager.getCurrentItem());
+            String url = page.link;
+
+            if(url != null) {
+                boolean containsUrl = false;
+                for (int i = 1; i <= bookmarkCount; i++) {
+                    if (sharedPreferences.getString("url" + i, null).equals(url)) {
+                        containsUrl = true;
+                        break;
+                    }
+                }
+
+                if (!containsUrl) {
+                    bookmarkCount++;
+                    editor.putInt("bookmarkCount", bookmarkCount).commit();
+                    editor.putString("url" + bookmarkCount, url).commit();
+                    editor.putString("title" + bookmarkCount, page.pageTitle).commit();
+                    Toast.makeText(BrowserActivity.this, "Bookmark saved", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void viewBookmarks() {
+        Intent bookmarksActivityIntent = new Intent(BrowserActivity.this, BookmarksActivity.class);
+        //bookmarksActivityIntent.putExtra("data", data);
+        startActivityForResult(bookmarksActivityIntent, 1);
     }
 
     @Override

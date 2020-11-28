@@ -20,6 +20,8 @@ public class BrowserControlFragment extends Fragment {
 
     BrowserControlInterface parentActivity;
     ImageButton imageButton;
+    ImageButton saveBookmark;
+    ImageButton viewBookmarks;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -80,11 +82,25 @@ public class BrowserControlFragment extends Fragment {
         View l = inflater.inflate(R.layout.fragment_browser_control, container, false);
 
         imageButton = l.findViewById(R.id.imageButton);
+        saveBookmark = l.findViewById(R.id.saveBookmark);
+        viewBookmarks = l.findViewById(R.id.viewBookmarks);
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 parentActivity.makePage();
+            }
+        });
+        saveBookmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.saveBookmark();
+            }
+        });
+        viewBookmarks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.viewBookmarks();
             }
         });
 
@@ -93,5 +109,7 @@ public class BrowserControlFragment extends Fragment {
 
     interface BrowserControlInterface {
         void makePage();
+        void saveBookmark();
+        void viewBookmarks();
     }
 }
