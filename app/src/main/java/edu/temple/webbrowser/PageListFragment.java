@@ -127,6 +127,12 @@ public class PageListFragment extends Fragment {
         outState.putStringArrayList("Title List", titleList);
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //((BrowserActivity) parentActivity).handleIntent(4);
+    }
+
     interface PageListInterface {
         void updateTitle(int index, String title);
         void addView(String title);

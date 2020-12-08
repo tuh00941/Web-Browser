@@ -96,6 +96,10 @@ public class PageViewerFragment extends Fragment {
             ((PageListFragment.PageListInterface) ((PagerFragment) getParentFragment()).getActivity()).addView(webView.getTitle());
         }
 
+        if(position == ((PagerFragment) getParentFragment()).viewPager.getCurrentItem()) {
+            ((BrowserActivity) ((PagerFragment) getParentFragment()).getActivity()).handleIntent();
+        }
+
         return l;
     }
 

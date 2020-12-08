@@ -104,6 +104,12 @@ public class PageControlFragment extends Fragment {
         return l;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //((BrowserActivity) parentActivity).handleIntent(2);
+    }
+
     interface LoadPageInterface {
         void loadPage(String url);
         void goBack();

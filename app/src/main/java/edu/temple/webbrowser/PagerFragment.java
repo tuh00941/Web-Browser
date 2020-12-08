@@ -182,4 +182,10 @@ public class PagerFragment extends Fragment {
             i++;
         }
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //((BrowserActivity) getActivity()).handleIntent(1);
+    }
 }

@@ -107,6 +107,12 @@ public class BrowserControlFragment extends Fragment {
         return l;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //((BrowserActivity) parentActivity).handleIntent(3);
+    }
+
     interface BrowserControlInterface {
         void makePage();
         void saveBookmark();

@@ -7,10 +7,18 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 public class BrowserActivity extends AppCompatActivity implements PageControlFragment.LoadPageInterface, PageViewerFragment.SetUrlInterface, BrowserControlFragment.BrowserControlInterface, PageListFragment.PageListInterface {
@@ -23,10 +31,25 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
 
     Fragment tmpFragment;
 
+    Intent intent;
+    String action;
+    String data;
+
+    boolean pager;
+    boolean pageControl;
+    boolean browserControl;
+    boolean pageList;
+    boolean intentLoaded;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        pager = false;
+        pageControl = false;
+        browserControl = false;
+        pageList = false;
 
         FragmentManager fm = getSupportFragmentManager();
 
@@ -79,6 +102,21 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
                     .add(R.id.browser_control, browserControlFragment)
                     .commit();
         }
+
+        intent = getIntent();
+        action = intent.getAction();
+        data = intent.getDataString();
+        System.out.println("Data = " + data);
+
+        if (savedInstanceState != null) {
+            intentLoaded = savedInstanceState.getBoolean("intentLoaded");
+            if(!intent.toString().equals(savedInstanceState.getString("intent"))) {
+                intentLoaded = false;
+            }
+        }
+        else {
+            intentLoaded = false;
+        }
     }
 
     @Override
@@ -87,6 +125,53 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
         if(findViewById(R.id.page_list) != null) {
             getSupportFragmentManager().putFragment(outState, "Page List", pageListFragment);
         }
+        outState.putBoolean("intentLoaded", intentLoaded);
+        outState.putString("intent", intent.toString());
+    }
+
+    public void handleIntent() {
+        if (Intent.ACTION_VIEW.equals(action) && data != null && !intentLoaded) {
+            System.out.println("We should really be here");
+            if(pageControlFragment.url != null && !pageControlFragment.url.equals("")) {
+                makePage();
+            }
+
+            pageControlFragment.urlView.setText(data);
+            System.out.println("Url should equal " + data);
+            System.out.println("Url equals " + pageControlFragment.urlView.getText());
+            pageControlFragment.url = data;
+
+            loadPage(data);
+            intentLoaded = true;
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_share) {
+            if(pagerFragment.pageList.size() > 0) {
+                PageViewerFragment page = pagerFragment.pageList.get(pagerFragment.viewPager.getCurrentItem());
+                if(page.link != null && !page.link.equals("")) {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, page.link);
+                    sendIntent.setType("text/plain");
+
+                    Intent shareIntent = Intent.createChooser(sendIntent, null);
+                    startActivity(shareIntent);
+                }
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -111,8 +196,16 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
         if(pagerFragment.pageList.size() > 0) {
             PageViewerFragment page = pagerFragment.pageList.get(pagerFragment.viewPager.getCurrentItem());
 
+            if(page == null) {
+                System.out.println("Page " + (pagerFragment.viewPager.getCurrentItem()) + " is null");
+            }
+
             if(url.length() >= 7 && (url.substring(0, 8).equals("https://") || url.substring(0, 7).equals("http://"))) {
                 System.out.println(url);
+                if(page.webView == null) {
+                    System.out.println("Page " + (pagerFragment.viewPager.getCurrentItem()) + "'s web view is null");
+
+                }
                 page.webView.loadUrl(url);
             }
             else {
